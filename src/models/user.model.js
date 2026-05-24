@@ -45,11 +45,12 @@ const userSchema= new mongoose.Schema({
     timestamps:true
 })
 
-userSchema.pre("save",async function(next){
+userSchema.pre("save",async function(){
     if(!this.isModified("password"))return next();//to check if password field is updated if not return we dont wanna hash everytime when other fields are also changed
-    this.password=bcrypt.hash(this.password,10)
-    next()
+    this.password=await bcrypt.hash(this.password,10)
+    
 })
+
 userSchema.methods.isPasswordCorrect=async function(password){
 
     return await bcrypt.compare(password,this.password)
@@ -74,5 +75,5 @@ userSchema.methods.generateRefreshToken=function(){
         expiresIn:process.env.REFRESH_TOKEN_EXPIRY
     }
 )}
-userSchema.methods.generateRefreshToken=function(){}
+
 export const User =mongoose.model("User",userSchema)
