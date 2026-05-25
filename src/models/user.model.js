@@ -46,7 +46,7 @@ const userSchema= new mongoose.Schema({
 })
 
 userSchema.pre("save",async function(){
-    if(!this.isModified("password"))return next();//to check if password field is updated if not return we dont wanna hash everytime when other fields are also changed
+    if(!this.isModified("password")){return }//to check if password field is updated if not return we dont wanna hash everytime when other fields are also changed
     this.password=await bcrypt.hash(this.password,10)
     
 })
